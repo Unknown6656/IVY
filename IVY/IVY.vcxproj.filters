@@ -28,7 +28,7 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="nettle.cpp">
+    <ClCompile Include="ivy.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

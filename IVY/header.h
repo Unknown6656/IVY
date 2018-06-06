@@ -1,12 +1,21 @@
 #pragma once
+
 #include "stdafx.h"
-#include <ctype.h>
+
+#ifdef USE_BUILTIN
+    typedef unsigned char byte;
+    typedef unsigned short ushort;
+    typedef unsigned int uint;
+#else
+    #include <stdint.h>
+
+    typedef uint8_t byte;
+    typedef uint16_t ushort;
+    typedef uint32_t uint;
+#endif
 
 struct _bitmap;
 
-typedef unsigned char byte;
-typedef unsigned int uint;
-typedef unsigned short ushort;
 typedef void(*setpixel_pointer)(_bitmap*, uint, uint, uint);
 typedef uint(*getpixel_pointer)(_bitmap*, uint, uint);
 
@@ -71,4 +80,7 @@ public:
     }
 };
 
+
+void BGRA_to_RGBA(_bitmap);
+void RGBA_to_BGRA(_bitmap);
 void TestProcess(_bitmap, _bitmap);
