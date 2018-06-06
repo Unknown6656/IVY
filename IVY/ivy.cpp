@@ -129,6 +129,21 @@ public:
             *pixel |= luma;
         }
     }
+
+    inline uint GetPixelAsRGBA(uint x, uint y)
+    {
+        // TODO
+    }
+
+    inline byte GetPixelAsGray(uint x, uint y)
+    {
+        // TODO
+    }
+
+    inline uint GetPixelAsYUV(uint x, uint y)
+    {
+        // TODO
+    }
 };
 
 class RGBAPixelProvider
@@ -153,6 +168,21 @@ class RGBAPixelProvider
     {
         // TODO
     }
+
+    inline uint GetPixelAsRGBA(uint x, uint y)
+    {
+        // TODO
+    }
+
+    inline byte GetPixelAsGray(uint x, uint y)
+    {
+        // TODO
+    }
+
+    inline uint GetPixelAsYUV(uint x, uint y)
+    {
+        // TODO
+    }
 };
 
 class GrayPixelProvider
@@ -173,6 +203,21 @@ class GrayPixelProvider
     }
 
     inline void SetPixelFromYUV(uint x, uint y, uint yuv)
+    {
+        // TODO
+    }
+
+    inline uint GetPixelAsRGBA(uint x, uint y)
+    {
+        // TODO
+    }
+
+    inline byte GetPixelAsGray(uint x, uint y)
+    {
+        // TODO
+    }
+
+    inline uint GetPixelAsYUV(uint x, uint y)
     {
         // TODO
     }
