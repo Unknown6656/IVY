@@ -20,6 +20,32 @@ typedef void(*setpixel_pointer)(_bitmap*, uint, uint, uint);
 typedef uint(*getpixel_pointer)(_bitmap*, uint, uint);
 
 
+/* Converts the bytes (R, G, B, A) to its uint variant according to the machine's endianess */
+inline uint RGBA(byte r, byte g, byte b, byte a);
+/* Converts the given uint to the bytes (R, G, B, A) according to the machine's endianess */
+inline void RGBA(uint rgba, byte& r, byte& g, byte& b, byte& a);
+
+void BGRA_to_RGBA(_bitmap);
+void RGBA_to_BGRA(_bitmap);
+void TestProcess(_bitmap, _bitmap);
+
+template<typename T> T swap_endian(T u)
+{
+    union
+    {
+        T u;
+        unsigned char u8[sizeof(T)];
+    } source, dest;
+
+    source.u = u;
+
+    for (size_t k = 0; k < sizeof(T); k++)
+        dest.u8[k] = source.u8[sizeof(T) - k - 1];
+
+    return dest.u;
+}
+
+
 enum BitmapType
 {
     Gray_8,
@@ -65,7 +91,10 @@ public:
     virtual void SetPixelFromRGBA(uint, uint, byte, byte, byte, byte) = 0;
     virtual void SetPixelFromRGBA(uint x, uint y, uint rgba)
     {
-        SetPixelFromRGBA(x, y, rgba >> 24, rgba >> 16, rgba >> 8, rgba);
+        byte r, g, b, a;
+
+        RGBA(rgba, r, g, b, a);
+        SetPixelFromRGBA(x, y, r, g, b, a);
     }
     virtual void SetPixelFromGray(uint, uint, byte) = 0;
     virtual void SetPixelFromYUV(uint, uint, uint) = 0;
@@ -79,25 +108,3 @@ public:
         bitmap = bmp;
     }
 };
-
-
-void BGRA_to_RGBA(_bitmap);
-void RGBA_to_BGRA(_bitmap);
-void TestProcess(_bitmap, _bitmap);
-
-
-template <typename T> T swap_endian(T u)
-{
-    union
-    {
-        T u;
-        unsigned char u8[sizeof(T)];
-    } source, dest;
-
-    source.u = u;
-
-    for (size_t k = 0; k < sizeof(T); k++)
-        dest.u8[k] = source.u8[sizeof(T) - k - 1];
-
-    return dest.u;
-}

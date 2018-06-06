@@ -2,6 +2,13 @@
 #include "header.h"
 
 
+byte grayscale(byte r, byte g, byte b)
+{
+    return (byte)((r * 0.299)
+                + (g * 0.587)
+                + (b * 0.114));
+}
+
 class YUVPixelProvider
     : PixelProvider
 {
@@ -19,7 +26,7 @@ private:
         uint L;
 
         // Cauculation of Y from RGBA
-        L = (byte)((in & 0x000000FF)        * 0.299);
+        L =  (byte)((in & 0x000000FF)        * 0.299);
         L += (byte)(((in & 0x0000FF00) >> 8) * 0.587);
         L += (byte)(((in & 0x00FF0000) >> 16) * 0.114);
 
@@ -48,7 +55,7 @@ private:
         uint YUV;
 
         // Cauculation of Y from RGBA
-        YUV = (byte)((in & 0x000000FF)        * 0.299);
+        YUV =  (byte)((in & 0x000000FF)        * 0.299);
         YUV += (byte)(((in & 0x0000FF00) >> 8) * 0.587);
         YUV += (byte)(((in & 0x00FF0000) >> 16) * 0.114);
 
@@ -64,7 +71,7 @@ private:
         }
 
         // Calculation of U/Cb from RGBA
-        YUV = (byte)((in & 0x000000FF)        * -0.14713);
+        YUV =  (byte)((in & 0x000000FF)        * -0.14713);
         YUV += (byte)(((in & 0x0000FF00) >> 8) * -0.28886);
         YUV += (byte)(((in & 0x00FF0000) >> 16) * 0.436);
 
@@ -89,7 +96,7 @@ public:
 
     inline void SetPixelFromRGBA(uint x, uint y, byte r, byte g, byte b, byte a)
     {
-        SetPixelFromRGBA(x, y, (uint)r << 24 | (uint)g << 16 | (uint)b << 8 | a);
+        SetPixelFromRGBA(x, y, RGBA(r, g, b, a));
     }
 
     inline void SetPixelFromGray(uint x, uint y, byte gray)
@@ -171,12 +178,18 @@ class RGBAPixelProvider
 
     inline uint GetPixelAsRGBA(uint x, uint y)
     {
-        // TODO
+        byte* ptr = this->bitmap->Data + (y * this->bitmap->Width + x) * 4;
+
+        return RGBA(ptr[0], ptr[1], ptr[2], ptr[3]);
     }
 
     inline byte GetPixelAsGray(uint x, uint y)
     {
-        // TODO
+        byte r, g, b, a;
+
+        RGBA(GetPixelAsRGBA(x, y), r, g, b, a);
+
+        return grayscale(r, g, b);
     }
 
     inline uint GetPixelAsYUV(uint x, uint y)
@@ -190,11 +203,7 @@ class GrayPixelProvider
 {
     inline void SetPixelFromRGBA(uint x, uint y, byte r, byte g, byte b, byte a)
     {
-        byte gray = (byte)((r * 0.299)
-                         + (g * 0.587)
-                         + (b * 0.114));
-
-        SetPixelFromGray(x, y, gray);
+        SetPixelFromGray(x, y, grayscale(r, g, b));
     }
 
     inline void SetPixelFromGray(uint x, uint y, byte gray)
@@ -209,16 +218,20 @@ class GrayPixelProvider
 
     inline uint GetPixelAsRGBA(uint x, uint y)
     {
-        // TODO
+        byte gray = GetPixelAsGray(x, y);
+
+        return RGBA(gray, gray, gray, 0xff);
     }
 
     inline byte GetPixelAsGray(uint x, uint y)
     {
-        // TODO
+        return this->bitmap->Data[y * this->bitmap->Width + x];
     }
 
     inline uint GetPixelAsYUV(uint x, uint y)
     {
+        byte gray = GetPixelAsGray(x, y);
+
         // TODO
     }
 };
